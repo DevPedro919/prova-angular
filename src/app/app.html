@@ -1,1 +1,62 @@
-<router-outlet />
+<app-navbar (buscar)="onBuscar($event)"></app-navbar>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Produtos</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let produto of produtosFiltrados">
+          <app-cards [produto]="produto"></app-cards>
+          <input type="number" min="1" [max]="produto.estoque" [(ngModel)]="produto.adicionadoCarrinho" class="form-control mt-2" placeholder="Quantidade" />
+          <button class="btn btn-success mt-2" (click)="adicionarProdutoAocarrinho(produto)">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="produtos-adicionados">
+        <div class="d-flex align-items-center justify-content-between">
+          <h2 class="mb-0">Carrinho</h2>
+          <button *ngIf="produtosAdicionadosAoCarrinho.length > 0" class="btn btn-outline-danger btn-sm" (click)="limparCarrinho()">Limpar Carrinho</button>
+        </div>
+
+        <ng-container *ngIf="produtosAdicionadosAoCarrinho.length > 0; else nenhumAdicionado">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Valor Unit.</th>
+                <th>Total</th>
+                <th>Remover</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let produto of produtosAdicionadosAoCarrinho">
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.adicionadoCarrinho }}</td>
+                <td>{{ produto.valor}}</td>
+                <td>{{ (produto.valor * produto.adicionadoCarrinho)}}</td>
+                <td>
+                  <button class="btn btn-danger btn-sm" (click)="removerProduto(produto)">Remover</button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td colspan="2"><strong>{{ carrinhoTotal}}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </ng-container>
+
+        <ng-template #nenhumAdicionado>
+          <p class="text-muted">Nenhum produto adicionado.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
